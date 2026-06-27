@@ -98,15 +98,22 @@ def process_video(video_path):
             score,_=ssim(gray_before,gray_after,full=True)
 
             timestamp=round(frame_number/fps,2)
+            
+            if score < 0.97:
+                event = "ITEM_REMOVED"
 
-            if score<0.97:
-                event="ITEM_REMOVED"
-                confidence=round(max(0.5,min(0.99,1-score+0.5)),2)
-                display_text="ITEM REMOVED"
+                # Convert SSIM difference into a more intuitive confidence
+                confidence = 0.80 + ((0.97 - score) / 0.07) * 0.19
+                confidence = round(max(0.80, min(0.99, confidence)), 2)
+
+                display_text = "ITEM REMOVED"
+
             else:
-                event="SHELF_INTERACTION"
-                confidence=1.0
-                display_text="SHELF INTERACTION"
+                event = "SHELF_INTERACTION"
+
+                confidence = 0.90
+
+                display_text = "SHELF INTERACTION"
 
             events.append({
                 "Frame_Number":frame_number,
