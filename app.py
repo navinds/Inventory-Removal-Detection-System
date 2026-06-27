@@ -19,6 +19,15 @@ st.markdown("""
                     padding-left: 3.5rem;
                     padding-right: 3.5rem;
                 }
+                /* Custom highlight container box for sample footages */
+                .sample-box {
+                    background-color: #f0f7ff;
+                    border-left: 5px solid #0066cc;
+                    padding: 15px;
+                    border-radius: 4px;
+                    margin-top: 10px;
+                    margin-bottom: 20px;
+                }
         </style>
         """, unsafe_allow_html=True)
 
@@ -63,10 +72,18 @@ st.markdown("""
 Upload a CCTV video to detect shelf interactions and item removal events.
 """)
 
-# 4. File Uploader
+# --- RESET CALLBACK FUNCTION ---
+# This wipes out old data state memory the second a new video is interactively uploaded
+def reset_old_results():
+    st.session_state.processed = False
+    st.session_state.output_video = None
+    st.session_state.events_csv = None
+
+# 4. File Uploader (Linked to the reset listener function)
 uploaded_file = st.file_uploader(
     "Upload CCTV Video",
-    type=["mp4", "avi", "mov"]
+    type=["mp4", "avi", "mov"],
+    on_change=reset_old_results
 )
 
 st.markdown("""
