@@ -1,17 +1,17 @@
 import streamlit as st
 import os
 import pandas as pd
-import subprocess  # Required to fix the browser video playback issue
+import base64
 from detector import process_video
 
-# 1. Set Page Configuration
+# 1. Page Configuration (Only one call allowed per app)
 st.set_page_config(
     page_title="SuperTails - Inventory Removal Detection",
     layout="wide", 
     page_icon="https://i.ibb.co/spW9Jvr5/supertails.jpg"
 )
 
-# 2. Page Styling
+# 2. Page Layout Styling
 st.markdown("""
         <style>
                .block-container {
@@ -25,7 +25,7 @@ st.markdown("""
 st.text("")
 st.text("")
 
-# 3. Branding Header
+# 3. Branding & Header Section
 left, center, right = st.columns([1, 2, 1])
 
 with left:
@@ -47,7 +47,7 @@ with center:
 with right:
     st.empty()
 
-# Green divider
+# Green divider line
 st.markdown("""
     <hr style="
         border:none;
@@ -63,6 +63,7 @@ st.markdown("""
 Upload a CCTV video to detect shelf interactions and item removal events.
 """)
 
+# 4. File Uploader
 uploaded_file = st.file_uploader(
     "Upload CCTV Video",
     type=["mp4", "avi", "mov"]
@@ -72,7 +73,8 @@ st.markdown("""
 You can try using the following sample footages for testing the application:  [Sample Images on Google Drive](https://drive.google.com/drive/folders/1ukKwUSMEYPzks8GdULB5dXZP6ZLDXvMe?usp=sharing)
 """)
 
-# --- INITIALIZE SESSION STATE ---
+# 5. Initialize Streamlit Memory (Session State)
+# Keeps data alive when download buttons are clicked
 if 'processed' not in st.session_state:
     st.session_state.processed = False
     st.session_state.output_video = None
@@ -87,45 +89,36 @@ if uploaded_file is not None:
 
     st.success("Video uploaded successfully!")
 
-    # --- VIDEO PROCESSING & COVERTING BUTTON ---
+    # --- Processing Trigger ---
     if st.button("▶ Process Video"):
         with st.spinner("Processing video... Please wait."):
-            # Run your tracking model script
+            # Run the object detection backend model
             output_video, events_csv = process_video(input_path)
             
-            # Create a path for a browser-safe, playable MP4 version
-            h264_output_path = output_video.replace(".mp4", "_playable.mp4")
-            
-            # Convert OpenCV's raw MP4 into a web-playable H.264 MP4 using FFmpeg
-            try:
-                subprocess.run([
-                    'ffmpeg', '-y', '-i', output_video, 
-                    '-vcodec', 'libx264', '-f', 'mp4', h264_output_path
-                ], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-                
-                final_video_path = h264_output_path
-            except Exception as e:
-                # If FFmpeg is missing on the machine, fallback to original output
-                st.warning("FFmpeg conversion failed. Displaying uncompressed video.")
-                final_video_path = output_video
-            
-            # Save final paths to session state memory
-            st.session_state.output_video = final_video_path
+            # Save final paths directly to state memory
+            st.session_state.output_video = output_video
             st.session_state.events_csv = events_csv
             st.session_state.processed = True
             
         st.success("Processing Complete!")
 
-    # --- RENDER STABLE INTERFACE FROM MEMORY ---
+    # 6. Render interface UI components from stable state memory
     if st.session_state.processed:
         st.subheader("Processed Video")
 
-        # Read the browser-safe video file 
+        # Read output video bytes
         with open(st.session_state.output_video, "rb") as f:
             video_bytes = f.read()
 
-        # This will now stream correctly in Chrome/Safari/Edge!
-        st.video(video_bytes)
+        # HTML5 Wrapper bypass: Ensures browser processes codec streams efficiently
+        video_base64 = base64.b64encode(video_bytes).decode()
+        video_html = f'''
+            <video width="100%" controls autoplay muted loop style="border-radius: 5px;">
+                <source src="data:video/mp4;base64,{video_base64}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        '''
+        st.markdown(video_html, unsafe_allow_html=True)
 
         st.subheader("Detected Events")
 
@@ -148,6 +141,6 @@ if uploaded_file is not None:
                 st.download_button(
                     label="⬇ Download Output Video",
                     data=file,
-                    file_name="output.mp4", # Will save as clean, playable MP4
+                    file_name="output.mp4",
                     mime="video/mp4"
                 )
