@@ -1,15 +1,17 @@
 import streamlit as st
 import os
 import pandas as pd
+import subprocess  # Required to fix the browser video playback issue
 from detector import process_video
 
+# 1. Set Page Configuration
 st.set_page_config(
-    page_title="Inventory Removal Detection",
-    page_icon="📦",
-    layout="wide"
+    page_title="SuperTails - Inventory Removal Detection",
+    layout="wide", 
+    page_icon="https://i.ibb.co/spW9Jvr5/supertails.jpg"
 )
-st.set_page_config(page_title="SuperTails",layout="wide", page_icon="https://i.ibb.co/spW9Jvr5/supertails.jpg",)
-# Streamlit UI
+
+# 2. Page Styling
 st.markdown("""
         <style>
                .block-container {
@@ -20,21 +22,10 @@ st.markdown("""
         </style>
         """, unsafe_allow_html=True)
 
-import streamlit as st
-
-# Logo and Green Line
-import streamlit as st
-
-# 1. Create two columns with specific width ratios (adjust ratios as needed)
-import streamlit as st
-
-import streamlit as st
-
-import streamlit as st
-
 st.text("")
 st.text("")
 
+# 3. Branding Header
 left, center, right = st.columns([1, 2, 1])
 
 with left:
@@ -68,8 +59,6 @@ st.markdown("""
     ">
 """, unsafe_allow_html=True)
 
-
-
 st.markdown("""
 Upload a CCTV video to detect shelf interactions and item removal events.
 """)
@@ -78,53 +67,75 @@ uploaded_file = st.file_uploader(
     "Upload CCTV Video",
     type=["mp4", "avi", "mov"]
 )
-st.markdown(
-"""
+
+st.markdown("""
 You can try using the following sample footages for testing the application:  [Sample Images on Google Drive](https://drive.google.com/drive/folders/1ukKwUSMEYPzks8GdULB5dXZP6ZLDXvMe?usp=sharing)
-"""
-)
+""")
+
+# --- INITIALIZE SESSION STATE ---
+if 'processed' not in st.session_state:
+    st.session_state.processed = False
+    st.session_state.output_video = None
+    st.session_state.events_csv = None
 
 if uploaded_file is not None:
-
     os.makedirs("input", exist_ok=True)
-
-    input_path = os.path.join(
-        "input",
-        uploaded_file.name
-    )
+    input_path = os.path.join("input", uploaded_file.name)
 
     with open(input_path, "wb") as f:
         f.write(uploaded_file.getbuffer())
 
     st.success("Video uploaded successfully!")
 
+    # --- VIDEO PROCESSING & COVERTING BUTTON ---
     if st.button("▶ Process Video"):
-
         with st.spinner("Processing video... Please wait."):
-
+            # Run your tracking model script
             output_video, events_csv = process_video(input_path)
-
+            
+            # Create a path for a browser-safe, playable MP4 version
+            h264_output_path = output_video.replace(".mp4", "_playable.mp4")
+            
+            # Convert OpenCV's raw MP4 into a web-playable H.264 MP4 using FFmpeg
+            try:
+                subprocess.run([
+                    'ffmpeg', '-y', '-i', output_video, 
+                    '-vcodec', 'libx264', '-f', 'mp4', h264_output_path
+                ], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                
+                final_video_path = h264_output_path
+            except Exception as e:
+                # If FFmpeg is missing on the machine, fallback to original output
+                st.warning("FFmpeg conversion failed. Displaying uncompressed video.")
+                final_video_path = output_video
+            
+            # Save final paths to session state memory
+            st.session_state.output_video = final_video_path
+            st.session_state.events_csv = events_csv
+            st.session_state.processed = True
+            
         st.success("Processing Complete!")
 
+    # --- RENDER STABLE INTERFACE FROM MEMORY ---
+    if st.session_state.processed:
         st.subheader("Processed Video")
 
-        with open(output_video, "rb") as f:
+        # Read the browser-safe video file 
+        with open(st.session_state.output_video, "rb") as f:
             video_bytes = f.read()
 
+        # This will now stream correctly in Chrome/Safari/Edge!
         st.video(video_bytes)
 
         st.subheader("Detected Events")
 
-        df = pd.read_csv(events_csv)
-
+        df = pd.read_csv(st.session_state.events_csv)
         st.dataframe(df, use_container_width=True)
 
         col1, col2 = st.columns(2)
 
         with col1:
-
-            with open(events_csv, "rb") as file:
-
+            with open(st.session_state.events_csv, "rb") as file:
                 st.download_button(
                     label="⬇ Download Event Log",
                     data=file,
@@ -133,12 +144,10 @@ if uploaded_file is not None:
                 )
 
         with col2:
-
-            with open(output_video, "rb") as file:
-
+            with open(st.session_state.output_video, "rb") as file:
                 st.download_button(
                     label="⬇ Download Output Video",
                     data=file,
-                    file_name="output.mp4",
+                    file_name="output.mp4", # Will save as clean, playable MP4
                     mime="video/mp4"
                 )
