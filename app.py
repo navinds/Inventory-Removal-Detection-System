@@ -70,7 +70,7 @@ uploaded_file = st.file_uploader(
 )
 
 st.markdown("""
-You can try using the following sample footages for testing the application:  [Sample Images on Google Drive](https://drive.google.com/drive/folders/1ukKwUSMEYPzks8GdULB5dXZP6ZLDXvMe?usp=sharing)
+You can try using the following sample footages for testing the application:  [Sample footages on Google Drive](https://drive.google.com/drive/folders/1AiUoF8qRufmGj5l4KtQKzAONpwWiTkLp?usp=sharing)
 """)
 
 # 5. Initialize Streamlit Session State
