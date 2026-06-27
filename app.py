@@ -70,8 +70,13 @@ uploaded_file = st.file_uploader(
 )
 
 st.markdown("""
-You can try using the following sample footages for testing the application:  [Sample footages on Google Drive](https://drive.google.com/drive/folders/1AiUoF8qRufmGj5l4KtQKzAONpwWiTkLp?usp=sharing)
-""")
+<div class="sample-box">
+    <strong>💡 Quick Testing Tip:</strong> You can try using the following sample footages for testing the application: 
+    <a href="https://drive.google.com/drive/folders/1AiUoF8qRufmGj5l4KtQKzAONpwWiTkLp?usp=sharing" target="_blank" style="font-weight: bold; color: #0066cc; text-decoration: underline;">
+        Sample footages on Google Drive
+    </a>
+</div>
+""", unsafe_allow_html=True)
 
 # 5. Initialize Streamlit Session State
 if 'processed' not in st.session_state:
