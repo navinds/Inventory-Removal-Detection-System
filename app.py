@@ -89,7 +89,7 @@ uploaded_file = st.file_uploader(
 st.markdown("""
 <div class="sample-box">
     <strong>💡 Quick Testing Tip:</strong> You can try using the following sample footages for testing the application: 
-    <a href="https://drive.google.com/drive/folders/1AiUoF8qRufmGj5l4KtQKzAONpwWiTkLp?usp=sharing" target="_blank" style="font-weight: bold; color: #0066cc; text-decoration: underline;">
+    <a href="https://drive.google.com/drive/folders/1AiUoF8qRufmGj5l4KtQKzAONpwWiTkLp?usp=sharing" target="_blank" style="font-weight: bold; color: #7415AD; text-decoration: underline;">
         Sample footages on Google Drive
     </a>
 </div>
