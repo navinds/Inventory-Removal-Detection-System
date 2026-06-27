@@ -44,7 +44,7 @@ Person Leaves ROI
 Capture Shelf Image (After Interaction)
         │
         ▼
-SSIM Comparison
+SSIM Comparison (Compare shelf images before and after interaction)
         │
         ▼
 Decision Logic
@@ -242,26 +242,34 @@ The application generates:
 
 ### 2. CSV Event Log
 
-Example:
+The system generates a structured CSV file containing the detected events from the uploaded video.
 
-| Timestamp | Event_Type        | Confidence_Score |
-| --------- | ----------------- | ---------------: |
-| 8.24      | ITEM_REMOVED      |             0.92 |
-| 17.60     | SHELF_INTERACTION |             0.90 |
+| Frame_Number | Timestamp | Event_Type        | Confidence_Score |
+| -----------: | --------: | ----------------- | ---------------: |
+|          245 |      8.17 | ITEM_REMOVED      |             0.92 |
+|          528 |     17.60 | SHELF_INTERACTION |             0.90 |
+
+**Column Description**
+
+* **Frame_Number** – The frame number in the uploaded video where the event was detected.
+* **Timestamp** – Time (in seconds) corresponding to the detected frame.
+* **Event_Type** – Indicates whether an item was removed (`ITEM_REMOVED`) or the customer only interacted with the shelf (`SHELF_INTERACTION`).
+* **Confidence_Score** – The estimated confidence of the detected event based on the visual evidence observed after customer interaction.
 
 ---
 
 # Project Structure
 
-```
+```text
 inventory-removal-detector/
-
-│── app.py
-│── detector.py
-│── yolov8n.pt
-│── requirements.txt
-│── input/
-│── output/
+│
+├── .streamlit/
+│   └── config.toml               # Streamlit configuration
+│
+├── app.py                        # Streamlit web application
+├── detector.py                   # Core inventory removal detection pipeline
+├── requirements.txt              # Python dependencies
+├── README.md                     # Project documentation
 ```
 
 ---
