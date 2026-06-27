@@ -78,6 +78,11 @@ uploaded_file = st.file_uploader(
     "Upload CCTV Video",
     type=["mp4", "avi", "mov"]
 )
+st.markdown(
+"""
+You can try using the following sample footages for testing the application:  [Sample Images on Google Drive](https://drive.google.com/drive/folders/1ukKwUSMEYPzks8GdULB5dXZP6ZLDXvMe?usp=sharing)
+"""
+)
 
 if uploaded_file is not None:
 
