@@ -108,7 +108,10 @@ if uploaded_file is not None:
 
         st.subheader("Processed Video")
 
-        st.video(output_video)
+        with open(output_video, "rb") as f:
+            video_bytes = f.read()
+
+        st.video(video_bytes)
 
         st.subheader("Detected Events")
 
