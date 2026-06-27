@@ -1,4 +1,4 @@
-# 📦 SuperShelf – Inventory Removal Detection System
+# 📦 Navin's SuperShelf – Inventory Removal Detection System
 
 ## Live Demo
 
