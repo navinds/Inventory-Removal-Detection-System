@@ -1,10 +1,10 @@
 import streamlit as st
 import os
 import pandas as pd
-import base64
+from moviepy.editor import VideoFileClip
 from detector import process_video
 
-# 1. Page Configuration (Only one call allowed per app)
+# 1. Page Configuration
 st.set_page_config(
     page_title="SuperTails - Inventory Removal Detection",
     layout="wide", 
@@ -73,8 +73,7 @@ st.markdown("""
 You can try using the following sample footages for testing the application:  [Sample Images on Google Drive](https://drive.google.com/drive/folders/1ukKwUSMEYPzks8GdULB5dXZP6ZLDXvMe?usp=sharing)
 """)
 
-# 5. Initialize Streamlit Memory (Session State)
-# Keeps data alive when download buttons are clicked
+# 5. Initialize Streamlit Session State
 if 'processed' not in st.session_state:
     st.session_state.processed = False
     st.session_state.output_video = None
@@ -92,11 +91,24 @@ if uploaded_file is not None:
     # --- Processing Trigger ---
     if st.button("▶ Process Video"):
         with st.spinner("Processing video... Please wait."):
-            # Run the object detection backend model
-            output_video, events_csv = process_video(input_path)
+            # 1. Run the original backend model logic
+            raw_video, events_csv = process_video(input_path)
+            
+            # 2. Define path for browser-safe video file
+            web_safe_video = raw_video.replace(".mp4", "_web.mp4")
+            
+            try:
+                # 3. Force conversion to H.264 using pure Python library
+                clip = VideoFileClip(raw_video)
+                clip.write_videofile(web_safe_video, codec="libx264", audio=False, verbose=False, logger=None)
+                clip.close()
+                final_video = web_safe_video
+            except Exception as e:
+                # Fallback if conversion hits a file permissions error
+                final_video = raw_video
             
             # Save final paths directly to state memory
-            st.session_state.output_video = output_video
+            st.session_state.output_video = final_video
             st.session_state.events_csv = events_csv
             st.session_state.processed = True
             
@@ -110,15 +122,8 @@ if uploaded_file is not None:
         with open(st.session_state.output_video, "rb") as f:
             video_bytes = f.read()
 
-        # HTML5 Wrapper bypass: Ensures browser processes codec streams efficiently
-        video_base64 = base64.b64encode(video_bytes).decode()
-        video_html = f'''
-            <video width="100%" controls autoplay muted loop style="border-radius: 5px;">
-                <source src="data:video/mp4;base64,{video_base64}" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-        '''
-        st.markdown(video_html, unsafe_allow_html=True)
+        # This will now natively load via the standard st.video player!
+        st.video(video_bytes, format="video/mp4")
 
         st.subheader("Detected Events")
 
