@@ -86,17 +86,28 @@ uploaded_file = st.file_uploader(
     on_change=reset_old_results
 )
 
+# 2. Page Layout Styling
 st.markdown("""
-<div class="sample-box">
-    <span style="color: #BAE14A; font-weight: bold;">💡 Quick Testing Tip:</span> 
-    You can try using the following sample footages for testing the application: 
-    <a href="https://drive.google.com/drive/folders/1AiUoF8qRufmGj5l4KtQKzAONpwWiTkLp?usp=sharing" 
-       target="_blank" 
-       style="font-weight: bold; color: #BAE14A; text-decoration: underline; margin-left: 5px;">
-        Sample footages on Google Drive ↗
-    </a>
-</div>
-""", unsafe_allow_html=True)
+        <style>
+               .block-container {
+                    padding-top: 2.2rem;
+                    padding-left: 3.5rem;
+                    padding-right: 3.5rem;
+                }
+                /* New Beautifully Matching Sample Box Container */
+                .sample-box {
+                    background-color: #1E293B; /* Elegant Dark Slate */
+                    border-left: 5px solid #BAE14A; /* Matches your brand line */
+                    padding: 16px;
+                    border-radius: 8px;
+                    margin-top: 10px;
+                    margin-bottom: 25px;
+                    color: #FFFFFF; /* High contrast crisp white text */
+                    font-size: 15px;
+                    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+                }
+        </style>
+        """, unsafe_allow_html=True)
 
 # 5. Initialize Streamlit Session State
 if 'processed' not in st.session_state:
