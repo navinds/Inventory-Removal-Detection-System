@@ -1,3 +1,16 @@
+"""
+detector.py
+
+Inventory Removal Detection Pipeline
+
+This module processes a CCTV video to detect shelf interactions and
+identify item removal events using YOLOv8 person detection and
+SSIM-based image comparison.
+"""
+
+
+
+
 import cv2
 import pandas as pd
 from ultralytics import YOLO
@@ -7,11 +20,34 @@ import os
 
 def process_video(video_path):
 
-    os.makedirs("output", exist_ok=True)
+    """
+    Process an uploaded CCTV video.
 
+    Workflow:
+    1. Detect people using YOLOv8.
+    2. Monitor interaction inside the predefined Shelf ROI.
+    3. Capture shelf images before and after interaction.
+    4. Compare the images using SSIM.
+    5. Log ITEM_REMOVED or SHELF_INTERACTION events.
+    6. Generate an annotated output video and CSV event log.
+
+    Parameters
+    ----------
+    video_path : str
+        Path to the uploaded input video.
+
+    Returns
+    -------
+    tuple
+        (output_video_path, output_csv_path)
+    """
+
+    # Creating target environment paths
+    os.makedirs("output", exist_ok=True)
     output_video_path = "output/output.mp4"
     output_csv_path = "output/events.csv"
 
+    # Initializing model and configurations
     model = YOLO("yolov8n.pt")
 
     ROI_X1, ROI_Y1 = 180, 0
@@ -30,6 +66,7 @@ def process_video(video_path):
         (width, height)
     )
 
+    # Stating variables tracking iterations
     frame_number = 0
 
     interaction_active = False
@@ -49,18 +86,20 @@ def process_video(video_path):
         frame_number += 1
 
         annotated = frame.copy()
-
+        
+        # Render Shelf Region of Interest
         cv2.rectangle(annotated,(ROI_X1,ROI_Y1),(ROI_X2,ROI_Y2),(0,255,0),2)
         cv2.putText(annotated,"Shelf ROI",(ROI_X1+10,30),
                     cv2.FONT_HERSHEY_SIMPLEX,0.8,(0,255,0),2)
 
+        # Inference Pass
         results = model(frame, verbose=False)
 
         person_inside = False
 
         for result in results:
             for box in result.boxes:
-
+                # Class 0 tracking represents structural classification for 'Person'
                 if int(box.cls[0]) != 0:
                     continue
 
@@ -69,7 +108,8 @@ def process_video(video_path):
                     continue
 
                 x1,y1,x2,y2=map(int,box.xyxy[0])
-
+ 
+                # Annotate Person Bounding Box
                 cv2.rectangle(annotated,(x1,y1),(x2,y2),(255,0,0),2)
                 cv2.putText(annotated,f"Person {conf:.2f}",(x1,y1-10),
                             cv2.FONT_HERSHEY_SIMPLEX,0.6,(255,0,0),2)
@@ -98,7 +138,7 @@ def process_video(video_path):
             score,_=ssim(gray_before,gray_after,full=True)
 
             timestamp=round(frame_number/fps,2)
-            
+
             if score < 0.97:
                 event = "ITEM_REMOVED"
 
@@ -133,6 +173,12 @@ def process_video(video_path):
     cap.release()
     out.release()
 
-    pd.DataFrame(events).to_csv(output_csv_path,index=False)
+# Generate the Data log (Includes structure fallback for empty frame results)
+    if events:
+        df = pd.DataFrame(events)
+    else:
+        df = pd.DataFrame(columns=["Frame_Number", "Timestamp", "Event_Type", "Confidence_Score"])
+    
+    df.to_csv(output_csv_path, index=False)
 
     return output_video_path, output_csv_path
