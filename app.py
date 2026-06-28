@@ -73,14 +73,14 @@ st.markdown("""
 }
 
 .main-title{
-    font-size:52px;
+    font-size:54px;
     font-weight:900;
     font-family:'Segoe UI',sans-serif;
     letter-spacing:2px;
     text-transform:uppercase;
     white-space:nowrap;
 
-    background:linear-gradient(90deg,#c6e74d,#f5ffd2,#c6e74d);
+    background:linear-gradient(90deg,#c6e74d,#f3ffb8,#c6e74d);
     -webkit-background-clip:text;
     -webkit-text-fill-color:transparent;
 
@@ -94,23 +94,14 @@ st.markdown("""
 .credit{
     margin-top:10px;
     font-size:16px;
-    color:#bdbdbd;
+    color:#bfc5b2;
     letter-spacing:3px;
-    font-weight:500;
-}
-
-.credit span{
-    color:#c6e74d;
-    font-weight:700;
+    font-style:italic;
 }
 
 @keyframes glow{
-    0%,100%{
-        filter:drop-shadow(0 0 6px rgba(198,231,77,0.45));
-    }
-    50%{
-        filter:drop-shadow(0 0 18px rgba(198,231,77,0.9));
-    }
+    0%,100%{filter:drop-shadow(0 0 6px rgba(198,231,77,.4));}
+    50%{filter:drop-shadow(0 0 16px rgba(198,231,77,.8));}
 }
 </style>
 
@@ -118,9 +109,8 @@ st.markdown("""
     <div class="main-title">
         INVENTORY REMOVAL DETECTION SYSTEM
     </div>
-
     <div class="credit">
-        Developed by <span>Navin Kumar S</span>
+        Developed by Navin Kumar S
     </div>
 </div>
 """, unsafe_allow_html=True)
