@@ -65,12 +65,59 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st.markdown("""
-    <div style="height:140px; display:flex; align-items:center;">
-        <img src="https://i.postimg.cc/J0bKLBVm/Black-and-Gold-Bold-Legal-Advisor-Linked-In-Banner-Photoroom.png"
-             style="width:200px; height:auto;">
-    </div>
-    """, unsafe_allow_html=True)
+<style>
+.title-container{
+    text-align:center;
+    margin-top:10px;
+    margin-bottom:25px;
+}
 
+.main-title{
+    font-size:58px;
+    font-weight:900;
+    font-family:'Segoe UI',sans-serif;
+    line-height:1.05;
+    letter-spacing:3px;
+    text-transform:uppercase;
+
+    background: linear-gradient(90deg,#c6e74d,#e7ff9d,#c6e74d);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+
+    text-shadow:
+        0 0 10px rgba(198,231,77,0.35),
+        0 0 20px rgba(198,231,77,0.25);
+
+    animation: glow 3s ease-in-out infinite;
+}
+
+.subtitle{
+    color:#d8d8d8;
+    font-size:17px;
+    letter-spacing:4px;
+    margin-top:12px;
+    text-transform:uppercase;
+}
+
+@keyframes glow{
+    0%,100%{
+        filter:drop-shadow(0 0 6px rgba(198,231,77,0.4));
+    }
+    50%{
+        filter:drop-shadow(0 0 16px rgba(198,231,77,0.8));
+    }
+}
+</style>
+
+<div class="title-container">
+    <div class="main-title">
+        INVENTORY REMOVAL<br>DETECTION SYSTEM
+    </div>
+    <div class="subtitle">
+        AI Powered • Real-Time Shelf Monitoring
+    </div>
+</div>
+""", unsafe_allow_html=True)
 
 st.markdown("""
 Upload a CCTV video to detect shelf interactions and item removal events.
