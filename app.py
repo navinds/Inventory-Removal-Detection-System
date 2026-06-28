@@ -57,7 +57,7 @@ st.markdown("""
     <hr style="
         border:none;
         height:3px;
-        background:#BAE14A;
+        background:#c6e74d;
         width:100%;
         margin-top:15px;
         margin-bottom:25px;
