@@ -134,12 +134,12 @@ uploaded_file = st.file_uploader(
 )
 
 st.markdown("""
-<div style="background-color: #1E293B; border-left: 5px solid #BAE14A; padding: 16px; border-radius: 8px; margin-top: 10px; margin-bottom: 25px; color: #FFFFFF; font-size: 15px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
-    <span style="color: #BAE14A; font-weight: bold;">💡 Quick Testing Tip:</span> 
+<div style="background-color: #1E293B; border-left: 5px solid #c6e74d; padding: 16px; border-radius: 8px; margin-top: 10px; margin-bottom: 25px; color: #FFFFFF; font-size: 15px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
+    <span style="color: #c6e74d; font-weight: bold;">💡 Quick Testing Tip:</span> 
     You can try using the following sample footages for testing the application: 
     <a href="https://drive.google.com/drive/folders/1AiUoF8qRufmGj5l4KtQKzAONpwWiTkLp?usp=sharing" 
        target="_blank" 
-       style="font-weight: bold; color: #BAE14A; text-decoration: underline; margin-left: 5px;">
+       style="font-weight: bold; color: #c6e74d; text-decoration: underline; margin-left: 5px;">
         Sample footages on Google Drive ↗
     </a>
 </div>
