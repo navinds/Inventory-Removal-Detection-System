@@ -48,7 +48,7 @@ with left:
 with center:
     st.markdown("""
     <div style="height:140px; display:flex; justify-content:center; align-items:center;">
-        <img src="https://i.postimg.cc/RZF5t0XJ/Red-Modern-Welcome-Banner-Horizontal.png"
+        <img src="https://i.postimg.cc/wMkngrLW/center-Photoroom.png"
              style="width:400px; height:auto;">
     </div>
     """, unsafe_allow_html=True)
