@@ -39,7 +39,6 @@ left, center, right = st.columns([1, 2, 1])
 
 with left:
     st.markdown("""
-   
     """, unsafe_allow_html=True)
 
 with center:
@@ -64,6 +63,14 @@ st.markdown("""
         margin-bottom:25px;
     ">
 """, unsafe_allow_html=True)
+
+st.markdown("""
+    <div style="height:140px; display:flex; align-items:center;">
+        <img src="https://i.postimg.cc/wMkngrLW/center-Photoroom.png"
+             style="width:200px; height:auto;">
+    </div>
+    """, unsafe_allow_html=True)
+
 
 st.markdown("""
 Upload a CCTV video to detect shelf interactions and item removal events.
