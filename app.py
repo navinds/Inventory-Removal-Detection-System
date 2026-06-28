@@ -39,13 +39,16 @@ left, center, right = st.columns([1, 2, 1])
 
 with left:
     st.markdown("""
-.
+    <div style="height:140px; display:flex; align-items:center;">
+        <img src="https://i.postimg.cc/BQTn1Zch/updated-logo-super-shelf-Photoroom.png"
+             style="width:250px; height:auto;">
+    </div>
     """, unsafe_allow_html=True)
 
 with center:
     st.markdown("""
     <div style="height:140px; display:flex; justify-content:center; align-items:center;">
-        <img src="https://i.postimg.cc/MHcj8CCx/new-center-Photoroom.png"
+        <img src="https://i.postimg.cc/wMkngrLW/center-Photoroom.png"
              style="width:400px; height:auto;">
     </div>
     """, unsafe_allow_html=True)
