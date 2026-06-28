@@ -67,7 +67,7 @@ st.markdown("""
 st.markdown("""
     <div style="height:140px; display:flex; align-items:center;">
         <img src="https://i.postimg.cc/J0bKLBVm/Black-and-Gold-Bold-Legal-Advisor-Linked-In-Banner-Photoroom.png"
-             style="width:500px; height:auto;">
+             style="width:200px; height:auto;">
     </div>
     """, unsafe_allow_html=True)
 
